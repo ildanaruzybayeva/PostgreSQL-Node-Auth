@@ -1,17 +1,19 @@
+const http = require("http");
 const express = require("express");
 const app = express();
-const port = 3000;
+const server = http.createServer(app);
 const cors = require("cors");
-const client = require("./db");
 
 //middleware
 app.use(express.json()); //req.body
 app.use(cors());
 
+app.use("/auth", require("./routes/jwtAuth"));
+
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("hi");
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
+server.listen(process.env.PORT || 8000, () =>
+  console.log(`Server has started on port 8000.`)
+);

@@ -1,14 +1,10 @@
-const { Client } = require("pg");
+const { Pool } = require("pg");
+require("dotenv").config();
 
-const connectionString =
-  "	postgres://yzefjgwn:ikbZ147BENOiCxLDiO598p1MjE2VL3cx@balarama.db.elephantsql.com:5432/yzefjgwn";
+const connectionString = process.env.pgString;
 
-const client = new Client({
-  connectionString: connectionString
+const pool = new Pool({
+  connectionString
 });
 
-client.connect();
-
-module.exports = {
-  client
-};
+module.exports = pool;
