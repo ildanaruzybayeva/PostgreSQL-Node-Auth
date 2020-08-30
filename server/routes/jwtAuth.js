@@ -38,4 +38,31 @@ router.post("/register", async (req, res) => {
   }
 });
 
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await pool.query("SELECT * FROM users where user_email=$1", [
+      email
+    ]);
+    if (user.rows.length === 0) {
+      return res.status(401).json("User with such email does not exist");
+    }
+
+    const validPassword = await bcrypt.compare(
+      password,
+      user.rows[0].user_password
+    );
+
+    if (!validPassword) {
+      return res.status(401).json("Invalid password");
+    }
+
+    const token = JWTGenerator(user.rows[0].user_id);
+    res.json({ token });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
 module.exports = router;
